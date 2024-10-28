@@ -1,21 +1,34 @@
 import { Link, router} from "expo-router";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { LinearGradient } from 'expo-linear-gradient';
 import { View, Text, TextInput, SafeAreaView, StyleSheet, TouchableOpacity, ImageBackground } from "react-native";
+import { FIREBASE_AUTH } from "@/firebaseConfig";
+import { signInWithEmailAndPassword } from "firebase/auth";
 
 export default function Login() {
   const [email, setEmail] = useState("");
   const [pass, setPass] = useState("");
 
-  //const [count, setCount] = useState(0);
-  //const onPress = () => setCount(prevCount => prevCount + 1);
+  const auth = FIREBASE_AUTH;
+  
+  useEffect(() => {
+    console.log(auth.currentUser)
+  }, [auth.currentUser]);
 
-  const onPress = () => {
-    router.push("/(tabs)")
-  }
+  useEffect(() => {
+    console.log(email, pass)
+  }, [email, pass]);
 
-  console.log(email, pass);
-  console.log(typeof email, typeof pass);
+  const singIn = () => {
+    signInWithEmailAndPassword(auth, email, pass)
+    .then((dadosUsuer) => {
+      console.log(dadosUsuer);
+      router.push("/(tabs)")
+    }) .catch((err) => {
+      alert(err.message)
+    });
+  } 
+  
 
   const image = {uri:'https://w0.peakpx.com/wallpaper/1010/973/HD-wallpaper-minimal-landscape-design-draw-landscape-minimal-mountain-nature-sky-tree-trending-trendy.jpg'}
   return (
@@ -46,7 +59,7 @@ export default function Login() {
                 <Text>Count: {count}</Text>
               </View> */}
               <LinearGradient colors={['#614A97FF', '#6950C0FF', '#2A213AFF']} style={styles.button}>
-                <TouchableOpacity style={styles.button} onPress={onPress}>
+                <TouchableOpacity style={styles.button} onPress={singIn}>
                   <Text style={styles.btnText}>Entrar</Text>
                 </TouchableOpacity>
               </LinearGradient>
